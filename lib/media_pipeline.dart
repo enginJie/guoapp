@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:ffmpeg_kit_flutter_new_min_gpl/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter_new_min_gpl/ffprobe_kit.dart';
-import 'package:ffmpeg_kit_flutter_new_min_gpl/return_code.dart';
+import 'package:ffmpeg_kit_flutter_min_gpl/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter_min_gpl/ffprobe_kit.dart';
+import 'package:ffmpeg_kit_flutter_min_gpl/return_code.dart';
 
 import 'core_bridge.dart';
 import 'models.dart';
@@ -24,14 +24,14 @@ class MediaProbe {
   String get videoCodec => video['codec_name'] as String? ?? '';
   bool get hasAudio => audio.isNotEmpty;
   String get videoSignature => [
-    video['codec_name'],
-    video['width'],
-    video['height'],
-    video['pix_fmt'],
-    video['sample_aspect_ratio'] ?? '1:1',
-    video['color_transfer'] ?? 'unknown',
-    video['color_primaries'] ?? 'unknown',
-  ].join('|');
+        video['codec_name'],
+        video['width'],
+        video['height'],
+        video['pix_fmt'],
+        video['sample_aspect_ratio'] ?? '1:1',
+        video['color_transfer'] ?? 'unknown',
+        video['color_primaries'] ?? 'unknown',
+      ].join('|');
   String get audioSignature => !hasAudio
       ? 'none'
       : [
@@ -76,8 +76,8 @@ class MergePlan {
         return count != 0
             ? count
             : b
-                  .fold<double>(0, (s, p) => s + p.duration)
-                  .compareTo(a.fold<double>(0, (s, p) => s + p.duration));
+                .fold<double>(0, (s, p) => s + p.duration)
+                .compareTo(a.fold<double>(0, (s, p) => s + p.duration));
       });
     return ordered.first.first;
   }
@@ -92,9 +92,8 @@ class MergePlan {
     final audio = withAudio.isEmpty
         ? null
         : _majority(withAudio, (p) => p.audioSignature);
-    final vc = probes
-        .map((p) => p.videoSignature != video.videoSignature)
-        .toList();
+    final vc =
+        probes.map((p) => p.videoSignature != video.videoSignature).toList();
     var ac = probes
         .map((p) => audio != null && p.audioSignature != audio.audioSignature)
         .toList();
@@ -130,8 +129,7 @@ class MergePlan {
         }.contains(audio.audio['codec_name'])) {
       throw AppFailure('多数音轨格式暂不支持统一编码，可先按分集导出。');
     }
-    final transport =
-        {'h264', 'hevc'}.contains(video.videoCodec) &&
+    final transport = {'h264', 'hevc'}.contains(video.videoCodec) &&
         (audio == null ||
             {'aac', 'ac3', 'eac3', 'mp2'}.contains(audio.audio['codec_name']));
     if (!transport &&
@@ -155,8 +153,8 @@ class MergePlan {
       final layout = intValue(audio!.audio['channels']) == 1
           ? 'mono'
           : intValue(audio!.audio['channels']) == 2
-          ? 'stereo'
-          : audio!.audio['channel_layout'] as String? ?? 'stereo';
+              ? 'stereo'
+              : audio!.audio['channel_layout'] as String? ?? 'stereo';
       args.addAll([
         '-f',
         'lavfi',

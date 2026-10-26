@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:ffmpeg_kit_flutter_new_min_gpl/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter_min_gpl/ffmpeg_kit.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -108,8 +108,8 @@ class DownloadTaskHandler extends TaskHandler {
         notificationText: work > 0
             ? '正在更新站源或处理本地媒体'
             : active.isEmpty
-            ? '下载已完成或暂停'
-            : '${active.length} 集下载中 · ${(bytes / 1048576).toStringAsFixed(1)} MB',
+                ? '下载已完成或暂停'
+                : '${active.length} 集下载中 · ${(bytes / 1048576).toStringAsFixed(1)} MB',
       );
     } catch (_) {
       await FlutterForegroundTask.updateService(

@@ -118,22 +118,22 @@ class _PlayerScreenState extends State<PlayerScreen>
       (defaultTargetPlatform == TargetPlatform.android ||
           defaultTargetPlatform == TargetPlatform.iOS);
   PlaybackPreferences get _preferences => PlaybackPreferences(
-    speed: _speed,
-    quality: _requestedQuality,
-    autoAdvance: _autoAdvance,
-    danmaku: _danmakuEnabled,
-    preload: _preloadEnabled,
-  );
+        speed: _speed,
+        quality: _requestedQuality,
+        autoAdvance: _autoAdvance,
+        danmaku: _danmakuEnabled,
+        preload: _preloadEnabled,
+      );
   String get _qualityLabel => _plan?.local == true
       ? '本地原画'
       : _requestedQuality == 0
-      ? '自动'
-      : '${_requestedQuality}P';
+          ? '自动'
+          : '${_requestedQuality}P';
   String get _session => _plan?.session ?? '';
   double get _currentPosition =>
       _openedIndex == _index && _player.state.position.inMilliseconds > 0
-      ? _player.state.position.inMilliseconds / 1000
-      : _resumePosition;
+          ? _player.state.position.inMilliseconds / 1000
+          : _resumePosition;
 
   @override
   void initState() {
@@ -152,8 +152,7 @@ class _PlayerScreenState extends State<PlayerScreen>
     _danmaku = DanmakuController(widget.repository)
       ..setEnabled(_danmakuEnabled);
     widget.store.addListener(_accessChanged);
-    _player =
-        widget.playerFactory?.call() ??
+    _player = widget.playerFactory?.call() ??
         Player(
           configuration: const PlayerConfiguration(
             bufferSize: 32 * 1024 * 1024,
@@ -324,8 +323,7 @@ class _PlayerScreenState extends State<PlayerScreen>
     LanController.current?.attachPlayback(
       LanPlaybackHost(
         identity: _lanIdentity,
-        title:
-            widget.detail.drama.title +
+        title: widget.detail.drama.title +
             ' · 第 ' +
             widget.detail.episodes[_index].number.toString() +
             ' 集',
@@ -345,8 +343,7 @@ class _PlayerScreenState extends State<PlayerScreen>
         _error != null ||
         _openedIndex != _index ||
         _index != widget.initialIndex ||
-        widget.store.profileEpoch != _profileEpoch)
-      return;
+        widget.store.profileEpoch != _profileEpoch) return;
     final state = _player.state;
     final position = state.position.inMilliseconds / 1000;
     final duration = state.duration.inMilliseconds / 1000;
@@ -358,8 +355,7 @@ class _PlayerScreenState extends State<PlayerScreen>
         state.buffering ||
         (state.width ?? 0) <= 0 ||
         position < handoff.position - .5 ||
-        position > handoff.position + 20)
-      return;
+        position > handoff.position + 20) return;
     _lanFirstPosition ??= position;
     if (position >= _lanFirstPosition! + .15) handoff.acknowledge(position);
   }
@@ -369,8 +365,7 @@ class _PlayerScreenState extends State<PlayerScreen>
     await _serialize(() async {
       if (_closed ||
           generation != _generation ||
-          widget.store.profileEpoch != _profileEpoch)
-        return;
+          widget.store.profileEpoch != _profileEpoch) return;
       _playIntent = false;
       _interactions.cancel();
       _health.reset();
@@ -386,8 +381,7 @@ class _PlayerScreenState extends State<PlayerScreen>
         _closed ||
         _loading ||
         _error != null ||
-        widget.mediaId != null)
-      return;
+        widget.mediaId != null) return;
     final generation = _generation;
     final index = _index;
     bool current() =>
@@ -471,8 +465,7 @@ class _PlayerScreenState extends State<PlayerScreen>
       playing: state.playing && _playIntent && !state.completed,
       buffering: state.buffering,
       foreground: _foreground,
-      available:
-          !_loading &&
+      available: !_loading &&
           _error == null &&
           _openedIndex == _index &&
           widget.store.profileEpoch == _profileEpoch &&
@@ -567,9 +560,8 @@ class _PlayerScreenState extends State<PlayerScreen>
     _errorTimer?.cancel();
     _pendingError = false;
     final position = _currentPosition;
-    final action = current.local
-        ? PlaybackRecoveryAction.stop
-        : _recovery.next(current);
+    final action =
+        current.local ? PlaybackRecoveryAction.stop : _recovery.next(current);
     if (action == PlaybackRecoveryAction.stop) {
       _resumePosition = position;
       final ticket = _generation;
@@ -593,8 +585,8 @@ class _PlayerScreenState extends State<PlayerScreen>
           _localFailure = current.local;
           _error = current.local
               ? widget.allowOnlineFallback
-                    ? '本地视频读取失败，请重试或重新下载；也可以手动改为在线播放。'
-                    : '本地成品读取失败，请重试或重新生成。'
+                  ? '本地视频读取失败，请重试或重新下载；也可以手动改为在线播放。'
+                  : '本地成品读取失败，请重试或重新生成。'
               : '自动恢复未成功，请检查网络后重试，也可换一集或选择其他清晰度。';
         });
       }
@@ -689,8 +681,7 @@ class _PlayerScreenState extends State<PlayerScreen>
       widget.handoff?.fail('接收端已更换播放内容');
     }
     if (index != _index) _forceOnline = false;
-    final warmed =
-        handoffPlan ??
+    final warmed = handoffPlan ??
         (recoveryAction == null && _preloadEnabled && !widget.localOnly
             ? _preloader.take(
                 widget.detail.drama,
@@ -751,14 +742,14 @@ class _PlayerScreenState extends State<PlayerScreen>
       prepared = retained != null
           ? await _loader.fallback(retained!)
           : warmed != null
-          ? await _loader.use(warmed)
-          : await _loader.load(
-              widget.detail.drama,
-              widget.detail.episodes[index],
-              quality: _requestedQuality,
-              localOnly: widget.localOnly,
-              online: _forceOnline,
-            );
+              ? await _loader.use(warmed)
+              : await _loader.load(
+                  widget.detail.drama,
+                  widget.detail.episodes[index],
+                  quality: _requestedQuality,
+                  localOnly: widget.localOnly,
+                  online: _forceOnline,
+                );
       if (prepared == null) {
         return;
       }
@@ -832,7 +823,7 @@ class _PlayerScreenState extends State<PlayerScreen>
               _loading = false;
               _localFailure =
                   (error is AppFailure && error.code == 'local_media') ||
-                  (widget.localOnly && !_forceOnline);
+                      (widget.localOnly && !_forceOnline);
               _error = error is AppFailure ? error.message : '无法播放这一集，请重试或换一集。';
               widget.handoff?.fail(_error!);
             });
@@ -980,7 +971,7 @@ class _PlayerScreenState extends State<PlayerScreen>
               _danmaku,
               _preloader,
             ]),
-            builder: (_, _) => PlayerMenu(
+            builder: (context, child) => PlayerMenu(
               section: section,
               episodes: widget.detail.episodes,
               currentIndex: _index,
@@ -1039,8 +1030,8 @@ class _PlayerScreenState extends State<PlayerScreen>
     final target = desired < Duration.zero
         ? Duration.zero
         : maxDuration > Duration.zero && desired > maxDuration
-        ? maxDuration
-        : desired;
+            ? maxDuration
+            : desired;
     unawaited(_seekTo(target));
   }
 
@@ -1073,7 +1064,7 @@ class _PlayerScreenState extends State<PlayerScreen>
         context: context,
         builder: (_) => AnimatedBuilder(
           animation: Listenable.merge([_danmaku, _preloader]),
-          builder: (_, _) => TelevisionSettingsDialog(
+          builder: (context, child) => TelevisionSettingsDialog(
             speed: _speed,
             quality: _requestedQuality,
             qualities: _plan?.qualities ?? [],
@@ -1159,12 +1150,12 @@ class _PlayerScreenState extends State<PlayerScreen>
 
   @override
   Widget build(BuildContext context) => Theme(
-    data: _television ? televisionTheme(AppTheme.dark) : AppTheme.dark,
-    child: AnnotatedRegion<SystemUiOverlayStyle>(
-      value: AppTheme.systemBars(Brightness.dark),
-      child: Builder(builder: _buildPlayer),
-    ),
-  );
+        data: _television ? televisionTheme(AppTheme.dark) : AppTheme.dark,
+        child: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: AppTheme.systemBars(Brightness.dark),
+          child: Builder(builder: _buildPlayer),
+        ),
+      );
 
   Widget _buildPlayer(BuildContext context) {
     final title = widget.detail.drama.title;
@@ -1358,14 +1349,14 @@ class _PlayerScreenState extends State<PlayerScreen>
                       label: const Text('改为在线播放'),
                     )
                   : !_localFailure &&
-                        !widget.localOnly &&
-                        widget.repository.supportsSourceManagement
-                  ? SourceDiagnosticsButton(
-                      repository: widget.repository,
-                      store: widget.store,
-                      drama: widget.detail.drama,
-                    )
-                  : null,
+                          !widget.localOnly &&
+                          widget.repository.supportsSourceManagement
+                      ? SourceDiagnosticsButton(
+                          repository: widget.repository,
+                          store: widget.store,
+                          drama: widget.detail.drama,
+                        )
+                      : null,
               icon: Icons.play_disabled_rounded,
             ),
           ),
@@ -1425,66 +1416,66 @@ class _PlayerScreenState extends State<PlayerScreen>
   }
 
   Widget _actionBar(Episode episode) => Container(
-    color: const Color(0xFF191A20),
-    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-    child: LayoutBuilder(
-      builder: (context, constraints) => Row(
-        children: [
-          IconButton(
-            tooltip: '上一集',
-            onPressed: _index > 0 ? () => _play(_index - 1) : null,
-            icon: const Icon(Icons.skip_previous_rounded),
-          ),
-          Flexible(
-            child: TextButton(
-              onPressed: () => _openPanel(PlayerMenuSection.episodes),
-              child: Text(
-                '第 ${episode.number} 集 ▾',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+        color: const Color(0xFF191A20),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: LayoutBuilder(
+          builder: (context, constraints) => Row(
+            children: [
+              IconButton(
+                tooltip: '上一集',
+                onPressed: _index > 0 ? () => _play(_index - 1) : null,
+                icon: const Icon(Icons.skip_previous_rounded),
               ),
-            ),
+              Flexible(
+                child: TextButton(
+                  onPressed: () => _openPanel(PlayerMenuSection.episodes),
+                  child: Text(
+                    '第 ${episode.number} 集 ▾',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+              IconButton(
+                tooltip: '下一集',
+                onPressed: _index + 1 < widget.detail.episodes.length
+                    ? () => _play(_index + 1)
+                    : null,
+                icon: const Icon(Icons.skip_next_rounded),
+              ),
+              const Spacer(),
+              if (constraints.maxWidth >= 440)
+                TextButton(
+                  onPressed: () => _openPanel(PlayerMenuSection.speed),
+                  child: Text('${_speed}x'),
+                ),
+              if (constraints.maxWidth >= 560)
+                TextButton(
+                  onPressed: () => _openPanel(PlayerMenuSection.quality),
+                  child: Text(_qualityLabel),
+                ),
+              if (widget.mediaId == null)
+                LanPushButton(
+                  key: const ValueKey('player-lan-push'),
+                  onPressed: _loading || _error != null ? null : _pushToDevice,
+                ),
+              IconButton(
+                key: const ValueKey('player-danmaku-settings'),
+                tooltip: '播放设置 · 画质、倍速与弹幕',
+                onPressed: () => _openPanel(PlayerMenuSection.settings),
+                icon: const Icon(Icons.tune_rounded),
+              ),
+            ],
           ),
-          IconButton(
-            tooltip: '下一集',
-            onPressed: _index + 1 < widget.detail.episodes.length
-                ? () => _play(_index + 1)
-                : null,
-            icon: const Icon(Icons.skip_next_rounded),
-          ),
-          const Spacer(),
-          if (constraints.maxWidth >= 440)
-            TextButton(
-              onPressed: () => _openPanel(PlayerMenuSection.speed),
-              child: Text('${_speed}x'),
-            ),
-          if (constraints.maxWidth >= 560)
-            TextButton(
-              onPressed: () => _openPanel(PlayerMenuSection.quality),
-              child: Text(_qualityLabel),
-            ),
-          if (widget.mediaId == null)
-            LanPushButton(
-              key: const ValueKey('player-lan-push'),
-              onPressed: _loading || _error != null ? null : _pushToDevice,
-            ),
-          IconButton(
-            key: const ValueKey('player-danmaku-settings'),
-            tooltip: '播放设置 · 画质、倍速与弹幕',
-            onPressed: () => _openPanel(PlayerMenuSection.settings),
-            icon: const Icon(Icons.tune_rounded),
-          ),
-        ],
-      ),
-    ),
-  );
+        ),
+      );
 
   Widget _episodePanel() => ColoredBox(
-    color: const Color(0xFF101114),
-    child: PlayerEpisodeGrid(
-      episodes: widget.detail.episodes,
-      currentIndex: _index,
-      onSelected: (index) => _play(index),
-    ),
-  );
+        color: const Color(0xFF101114),
+        child: PlayerEpisodeGrid(
+          episodes: widget.detail.episodes,
+          currentIndex: _index,
+          onSelected: (index) => _play(index),
+        ),
+      );
 }

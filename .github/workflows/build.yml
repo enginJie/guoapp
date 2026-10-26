@@ -197,7 +197,7 @@ jobs:
           cache-dependency-path: native/go.sum
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.47.4'
+          flutter-version: '3.32.8'
           channel: stable
           cache: true
       - run: python3 scripts/build_ios.py ${{ matrix.arguments }}

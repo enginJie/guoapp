@@ -552,14 +552,14 @@ Android 使用可用的 Thermal API、供电与省电状态辅助决策；`getTh
 
 0.2.15+21 已完成两版 Android ARM64 打包与安装包检查，签名与 0.2.10+16、0.2.14+20 一致，ARM64 分包版本码递增至 2021，可直接覆盖升级。此版本包含启动导航修复与首页多选、推荐、榜单的布局调整。Windows / iOS 完整应用仍待相应平台构建，本轮没有进行设备运行确认。
 
-0.2.16+22 的两版 Android 三种架构 APK、两版未签名 iOS IPA 和两版 Windows 完整包已由 GitHub Actions 构建，APK 使用固定发布证书签名并在构建中校验证书指纹，可从发布仓库的 Release 直接下载。构建通过只代表编译和打包完成，尚未进行设备安装、运行和真实站源验收。
+0.2.16+22 的两版 Android 三种架构 APK、两版未签名 iOS IPA 和两版 Windows 完整包已由 GitHub Actions 构建，APK 使用固定发布证书签名并在构建中校验证书指纹，可从发布仓库的 Release 直接下载。构建通过只代表编译和打包完成，尚未进行设备安装、运行和真实站源验收。0.2.17+23 将 iOS 工程目标调整为 iOS 12.1，并迁移至 Flutter 3.32.8、FFmpegKit 6.0.3 及兼容的文件、网络发现和后台任务插件；新版本尚未由 Actions 构建或在 iOS 12.4.1 设备验证。
 
 | 平台 | 包与状态 |
 | --- | --- |
 | Android 8.0+ 手机 | 0.2.15+21 提供两版 `arm64-v8a` APK；ARMv7 / x86_64 构建脚本保留，目前仅有历史版本安装包 |
 | Windows 10/11 x64 | 完整 ZIP 解压后运行 `hongguojian.exe`，全站源版为 `zhenguojian.exe`，保留所有 DLL 和 `data`；局域网原生发现依赖 Windows 10 1903+。0.2.16+22 已由 Actions 构建并检查包内文件，运行器的自检在播放器开始播放一步超时（无音频和图形设备），未做设备验收 |
 | Android TV | 与手机共用 APK，旧版电视界面与遥控有自动化记录；0.2.12 选集 / 设置及 0.2.13 同步 / 推送操作未验证，待电视实机验收 |
-| iOS 15.1+ | 已加入工程、Go 核心链接、媒体依赖、文件管理、系统代理桥接、Bonjour / 局域网权限和构建脚本；Actions 已产出未签名 IPA，需用自签工具安装，尚无已签名 IPA 和真机验收 |
+| iOS 12.1+ | Go 核心、FFmpegKit、文件管理、系统代理桥接、Bonjour / 局域网权限和构建目标已调整至 12.1；Flutter 3.32.8 云端构建及 iOS 12.4.1 安装验收待执行，IPA 仍需自签 |
 
 | 当前版本 | 安装包 | 大小 |
 | --- | --- | --- |
@@ -612,7 +612,7 @@ keyPassword=你的密码
 
 ## 开发与构建
 
-Flutter `3.47.4`、Dart `3.12+`、Go `1.24.1+`、Python `3.10+`。Android 需要 JDK 17、SDK 36、NDK `28.2.13676358`；Windows 需要 Visual Studio 的 C++ 桌面组件及 MinGW-w64 x64；iOS 需要 macOS、完整 Xcode 和 CocoaPods。
+Android / Windows 及通用检查使用 Flutter `3.47.4`、Dart `3.12+`；iOS 使用 Flutter `3.32.8`、Dart `3.8.1+` 以保留 iOS 12 兼容，所有平台需要 Go `1.24.1+`、Python `3.10+`。Android 需要 JDK 17、SDK 36、NDK `28.2.13676358`；Windows 需要 Visual Studio 的 C++ 桌面组件及 MinGW-w64 x64；iOS 需要 macOS、完整 Xcode 和 CocoaPods，或使用 GitHub Actions 的 macOS 云构建。
 
 将 Flutter、Go、Python 加入 PATH，Android 设置 `ANDROID_HOME`。构建脚本对子进程默认设置 `GOPROXY=https://goproxy.cn,direct`、`GOSUMDB=off`，不改全局配置；同名环境变量可覆盖。
 

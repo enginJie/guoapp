@@ -71,20 +71,19 @@ class _RefreshActionState extends State<RefreshAction>
 
   @override
   Widget build(BuildContext context) => Semantics(
-    liveRegion: true,
-    value: widget.loading ? '正在更新' : null,
-    child: IconButton(
-      tooltip: widget.loading ? '正在更新' : widget.tooltip,
-      onPressed: widget.loading ? null : widget.onPressed,
-      disabledColor: widget.loading
-          ? Theme.of(context).colorScheme.primary
-          : null,
-      icon: RotationTransition(
-        turns: _rotation,
-        child: const Icon(Icons.refresh_rounded),
-      ),
-    ),
-  );
+        liveRegion: true,
+        value: widget.loading ? '正在更新' : null,
+        child: IconButton(
+          tooltip: widget.loading ? '正在更新' : widget.tooltip,
+          onPressed: widget.loading ? null : widget.onPressed,
+          disabledColor:
+              widget.loading ? Theme.of(context).colorScheme.primary : null,
+          icon: RotationTransition(
+            turns: _rotation,
+            child: const Icon(Icons.refresh_rounded),
+          ),
+        ),
+      );
 }
 
 class DramaCover extends StatelessWidget {
@@ -300,23 +299,23 @@ class _CachedCoverImageState extends State<CachedCoverImage> {
 
   @override
   Widget build(BuildContext context) => FutureBuilder<String>(
-    future: _file,
-    builder: (context, snapshot) {
-      if (snapshot.connectionState != ConnectionState.done) {
-        return widget.placeholder;
-      }
-      if (snapshot.hasError || !snapshot.hasData) {
-        return _failed(null);
-      }
-      return Image.file(
-        File(snapshot.data!),
-        fit: BoxFit.cover,
-        cacheWidth: 440,
-        excludeFromSemantics: true,
-        errorBuilder: (_, error, stack) => _failed(snapshot.data),
+        future: _file,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return widget.placeholder;
+          }
+          if (snapshot.hasError || !snapshot.hasData) {
+            return _failed(null);
+          }
+          return Image.file(
+            File(snapshot.data!),
+            fit: BoxFit.cover,
+            cacheWidth: 440,
+            excludeFromSemantics: true,
+            errorBuilder: (_, error, stack) => _failed(snapshot.data),
+          );
+        },
       );
-    },
-  );
 }
 
 class DramaTile extends StatelessWidget {
@@ -463,7 +462,8 @@ class DramaTile extends StatelessWidget {
     if (television) {
       return CallbackShortcuts(
         bindings: {
-          const SingleActivator(LogicalKeyboardKey.contextMenu): ?onMore,
+          if (onMore != null)
+            const SingleActivator(LogicalKeyboardKey.contextMenu): onMore!,
         },
         child: RemoteTarget(
           focusNode: focusNode,
@@ -509,45 +509,46 @@ class StatusPanel extends StatelessWidget {
   final Widget? secondaryAction;
   @override
   Widget build(BuildContext context) => Center(
-    child: SingleChildScrollView(
-      padding: const EdgeInsets.all(28),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 56, color: Theme.of(context).colorScheme.primary),
-          const SizedBox(height: 20),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          if (message.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(28),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon,
+                  size: 56, color: Theme.of(context).colorScheme.primary),
+              const SizedBox(height: 20),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-            ),
-          ],
-          if (onRetry != null) ...[
-            const SizedBox(height: 24),
-            FilledButton.icon(
-              autofocus: AppLayout.isTelevision(context),
-              onPressed: onRetry,
-              icon: const Icon(Icons.refresh_rounded),
-              label: Text(action),
-            ),
-          ],
-          if (secondaryAction != null) ...[
-            const SizedBox(height: 8),
-            secondaryAction!,
-          ],
-        ],
-      ),
-    ),
-  );
+              if (message.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Text(
+                  message,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+              if (onRetry != null) ...[
+                const SizedBox(height: 24),
+                FilledButton.icon(
+                  autofocus: AppLayout.isTelevision(context),
+                  onPressed: onRetry,
+                  icon: const Icon(Icons.refresh_rounded),
+                  label: Text(action),
+                ),
+              ],
+              if (secondaryAction != null) ...[
+                const SizedBox(height: 8),
+                secondaryAction!,
+              ],
+            ],
+          ),
+        ),
+      );
 }
 
 SliverGridDelegate dramaGridDelegate(BuildContext context, double width) {

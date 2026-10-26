@@ -108,8 +108,8 @@ class _AppBootstrapState extends State<AppBootstrap>
             kind: device.television
                 ? 'tv'
                 : Platform.isWindows
-                ? 'computer'
-                : 'phone',
+                    ? 'computer'
+                    : 'phone',
           );
           LanController.current = link;
           link.openPlayback = (request) async {
@@ -161,14 +161,14 @@ class _AppBootstrapState extends State<AppBootstrap>
 
   @override
   Widget build(BuildContext context) => DuanjuApp(
-    repository: repository,
-    store: store,
-    bootstrapError: error?.toString(),
-    onRetry: _initialize,
-    television: device.television,
-    version: device.version,
-    navigatorKey: navigator,
-  );
+        repository: repository,
+        store: store,
+        bootstrapError: error?.toString(),
+        onRetry: _initialize,
+        television: device.television,
+        version: device.version,
+        navigatorKey: navigator,
+      );
 }
 
 class DuanjuApp extends StatelessWidget {
@@ -192,92 +192,93 @@ class DuanjuApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
-    animation: Listenable.merge([store]),
-    builder: (_, _) => _application(),
-  );
+        animation: Listenable.merge([store]),
+        builder: (context, child) => _application(),
+      );
 
   Widget _application() => MaterialApp(
-    navigatorKey: navigatorKey,
-    title: appName,
-    debugShowCheckedModeBanner: false,
-    locale: const Locale('zh', 'CN'),
-    supportedLocales: const [Locale('zh', 'CN')],
-    localizationsDelegates: GlobalMaterialLocalizations.delegates,
-    theme: AppTheme.light,
-    darkTheme: AppTheme.dark,
-    themeMode: AppTheme.mode(store?.themeMode ?? 'system'),
-    builder: (context, child) {
-      final mode = store?.displayMode ?? 'auto';
-      final tv = mode == 'television' || mode == 'auto' && television;
-      final theme = Theme.of(context);
-      return AnnotatedRegion<SystemUiOverlayStyle>(
-        value: AppTheme.systemBars(theme.brightness),
-        child: ColoredBox(
-          color: theme.scaffoldBackgroundColor,
-          child: AppLayout(
-            television: tv,
-            version: version,
-            child: Theme(
-              data: tv ? televisionTheme(theme) : theme,
-              child: Shortcuts(
-                shortcuts: const {
-                  SingleActivator(
-                    LogicalKeyboardKey.select,
-                    includeRepeats: false,
-                  ): ActivateIntent(),
-                  SingleActivator(
-                    LogicalKeyboardKey.gameButtonA,
-                    includeRepeats: false,
-                  ): ActivateIntent(),
-                  SingleActivator(LogicalKeyboardKey.goBack): DismissIntent(),
-                },
-                child: FocusTraversalGroup(child: child!),
-              ),
-            ),
-          ),
-        ),
-      );
-    },
-    home: store != null
-        ? store!.locked
-              ? ProfilesScreen(store: store!, locked: true)
-              : HomeScreen(
-                  key: ValueKey(
-                    'profile-${store!.profile.id}-${store!.profileEpoch}',
+        navigatorKey: navigatorKey,
+        title: appName,
+        debugShowCheckedModeBanner: false,
+        locale: const Locale('zh', 'CN'),
+        supportedLocales: const [Locale('zh', 'CN')],
+        localizationsDelegates: GlobalMaterialLocalizations.delegates,
+        theme: AppTheme.light,
+        darkTheme: AppTheme.dark,
+        themeMode: AppTheme.mode(store?.themeMode ?? 'system'),
+        builder: (context, child) {
+          final mode = store?.displayMode ?? 'auto';
+          final tv = mode == 'television' || mode == 'auto' && television;
+          final theme = Theme.of(context);
+          return AnnotatedRegion<SystemUiOverlayStyle>(
+            value: AppTheme.systemBars(theme.brightness),
+            child: ColoredBox(
+              color: theme.scaffoldBackgroundColor,
+              child: AppLayout(
+                television: tv,
+                version: version,
+                child: Theme(
+                  data: tv ? televisionTheme(theme) : theme,
+                  child: Shortcuts(
+                    shortcuts: const {
+                      SingleActivator(
+                        LogicalKeyboardKey.select,
+                        includeRepeats: false,
+                      ): ActivateIntent(),
+                      SingleActivator(
+                        LogicalKeyboardKey.gameButtonA,
+                        includeRepeats: false,
+                      ): ActivateIntent(),
+                      SingleActivator(LogicalKeyboardKey.goBack):
+                          DismissIntent(),
+                    },
+                    child: FocusTraversalGroup(child: child!),
                   ),
-                  repository: repository,
-                  store: store!,
-                )
-        : Scaffold(
-            body: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.play_circle_fill_rounded,
-                      color: Color(0xFFFF765F),
-                      size: 72,
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      bootstrapError ?? '正在打开$appName',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                    const SizedBox(height: 24),
-                    if (bootstrapError == null)
-                      const CircularProgressIndicator()
-                    else
-                      FilledButton(
-                        onPressed: onRetry,
-                        child: const Text('重新打开'),
-                      ),
-                  ],
                 ),
               ),
             ),
-          ),
-  );
+          );
+        },
+        home: store != null
+            ? store!.locked
+                ? ProfilesScreen(store: store!, locked: true)
+                : HomeScreen(
+                    key: ValueKey(
+                      'profile-${store!.profile.id}-${store!.profileEpoch}',
+                    ),
+                    repository: repository,
+                    store: store!,
+                  )
+            : Scaffold(
+                body: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.play_circle_fill_rounded,
+                          color: Color(0xFFFF765F),
+                          size: 72,
+                        ),
+                        const SizedBox(height: 24),
+                        Text(
+                          bootstrapError ?? '正在打开$appName',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                        const SizedBox(height: 24),
+                        if (bootstrapError == null)
+                          const CircularProgressIndicator()
+                        else
+                          FilledButton(
+                            onPressed: onRetry,
+                            child: const Text('重新打开'),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+      );
 }
